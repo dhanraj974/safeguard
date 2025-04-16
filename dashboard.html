@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .navbar {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #4fc3f7;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255,255,255,0.1);
+        }
+        .nav-link.active {
+            color: #fff !important;
+            background: rgba(255,255,255,0.2);
+        }
+        .nav-link i {
+            margin-right: 0.5rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .page-header h2 {
+            color: #1a237e;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .page-header p {
+            color: #546e7a;
+            font-size: 1.1rem;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-title {
+            color: #1a237e;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            border: none;
+            padding: 0.5rem 1.5rem;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0d47a1 0%, #1a237e 100%);
+            transform: translateY(-2px);
+        }
+        .form-range::-webkit-slider-thumb {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+        }
+        .form-check-input:checked {
+            background-color: #1a237e;
+            border-color: #1a237e;
+        }
+        .activity-item {
+            padding: 1rem;
+            border-left: 3px solid #1a237e;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+        .activity-item:hover {
+            background: #f0f2f5;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-shield-alt"></i>
+                SafeGuard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacts.html">
+                            <i class="fas fa-address-book"></i> Emergency Contacts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="fas fa-cog"></i> Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2>Dashboard</h2>
+                    <p>Configure your safety settings and monitor activity</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <i class="fas fa-chart-line fa-3x text-primary"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-robot text-primary me-2"></i>AI Settings
+                        </h5>
+                        <form id="aiSettingsForm">
+                            <div class="mb-4">
+                                <label class="form-label">Voice Detection Sensitivity</label>
+                                <input type="range" class="form-range" name="voiceSensitivity" min="1" max="10" value="5">
+                                <div class="d-flex justify-content-between">
+                                    <small>Low</small>
+                                    <small>High</small>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Shake Detection Sensitivity</label>
+                                <input type="range" class="form-range" name="shakeSensitivity" min="1" max="10" value="5">
+                                <div class="d-flex justify-content-between">
+                                    <small>Low</small>
+                                    <small>High</small>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Location Update Frequency (seconds)</label>
+                                <input type="range" class="form-range" name="locationFrequency" min="5" max="60" value="10">
+                                <div class="d-flex justify-content-between">
+                                    <small>5s</small>
+                                    <small>60s</small>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Save AI Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-bell text-primary me-2"></i>Alert Settings
+                        </h5>
+                        <form id="alertSettingsForm">
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="smsAlerts" id="smsAlerts" checked>
+                                    <label class="form-check-label" for="smsAlerts">Enable SMS Alerts</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="emailAlerts" id="emailAlerts" checked>
+                                    <label class="form-check-label" for="emailAlerts">Enable Email Alerts</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="locationSharing" id="locationSharing" checked>
+                                    <label class="form-check-label" for="locationSharing">Share Location with Contacts</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Save Alert Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-history text-primary me-2"></i>Activity History
+                        </h5>
+                        <div id="activityHistory">
+                            <!-- Activity items will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html> 
