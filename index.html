@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="pb-24 text-slate-900 bg-slate-50">
+    <!-- Header -->
+    <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center gap-3">
+            <div class="bg-sky-500 p-2 rounded-lg shadow-lg shadow-sky-200">
+                <i class="fas fa-shield-alt text-white text-xl"></i>
+            </div>
+            <span class="text-2xl font-black tracking-tight text-slate-900 uppercase">Safe<span class="text-sky-500">Guard</span></span>
+        </div>
+        <div id="testModeIndicator" class="hidden flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-600 rounded-full border border-amber-200 text-xs font-bold uppercase">
+            <i class="fas fa-flask"></i> Simulation Mode
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 max-w-lg flex flex-col items-center justify-center py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-black text-slate-900 mb-2">Emergency Response</h1>
+            <p class="text-slate-500 font-medium tracking-tight">Tap button or say <span class="text-red-500 font-bold italic underline">"Help Help Help"</span></p>
+        </div>
+
+        <div class="relative mb-12">
+            <button id="emergencyBtn" class="sos-button flex flex-col items-center justify-center">
+                <i class="fas fa-bell text-6xl mb-4 text-white/90"></i>
+                <span class="text-3xl font-black tracking-widest uppercase text-white">SOS</span>
+            </button>
+        </div>
+
+        <!-- Voice Status -->
+        <div class="glass-panel rounded-3xl p-6 w-full flex flex-col items-center gap-4 shadow-xl shadow-slate-200/50">
+            <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Live Voice Protection</span>
+                <div id="voiceWave" class="voice-wave hidden">
+                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 w-full">
+                <div id="voiceIconContainer" class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-xl transition-all shadow-inner">
+                    <i id="voiceStatusIcon" class="fas fa-microphone-slash text-slate-400"></i>
+                </div>
+                <div>
+                    <p id="voiceStatusText" class="font-black text-slate-900 leading-tight">System standby...</p>
+                    <button id="enablePermissionsBtn" class="text-sky-600 text-xs hover:underline mt-1 hidden font-bold">Grant Permissions</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-100 px-6 py-3 flex justify-around items-center z-50">
+        <a href="index.html" class="nav-link active">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">SOS</span>
+        </a>
+        <a href="contacts.html" class="nav-link">
+            <i class="fas fa-users text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Contacts</span>
+        </a>
+        <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Settings</span>
+        </a>
+    </div>
+
+    <!-- SOS Modal -->
+    <div id="statusModal" class="fixed inset-0 status-modal-bg flex items-center justify-center z-[100] hidden">
+        <div class="text-center max-w-md w-full px-6">
+            <div id="statusLoading" class="space-y-8">
+                <div class="relative inline-block">
+                    <div class="w-32 h-32 border-8 border-red-100 border-t-red-500 rounded-full animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-broadcast-tower text-3xl text-red-500 animate-pulse"></i>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-4xl font-black text-white mb-3 tracking-tighter uppercase">Broadcasting</h3>
+                    <p id="currentAction" class="text-red-200 font-mono text-xs tracking-widest">INITIALIZING PROTOCOL...</p>
+                </div>
+            </div>
+            <div id="statusSuccess" class="hidden space-y-8">
+                <div class="w-32 h-32 bg-green-500 rounded-full inline-flex items-center justify-center shadow-2xl shadow-green-500/50">
+                    <i class="fas fa-check text-5xl text-white"></i>
+                </div>
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <h3 class="text-3xl font-black text-slate-900 mb-2 uppercase tracking-tighter">Alerts Deployed</h3>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-8 text-left">
+                        <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest block mb-1">Live Location Sent:</span>
+                        <a id="capturedLocationLink" href="#" target="_blank" class="text-sky-600 text-xs font-mono break-all hover:underline flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt"></i> Fetching...
+                        </a>
+                    </div>
+                    <button onclick="location.reload()" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl uppercase tracking-widest shadow-xl">I am safe now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="core.js"></script>
+    <script>
+        const voiceStatusText = document.getElementById('voiceStatusText');
+        const voiceStatusIcon = document.getElementById('voiceStatusIcon');
+        const voiceIconContainer = document.getElementById('voiceIconContainer');
+        const voiceWave = document.getElementById('voiceWave');
+        const enablePermissionsBtn = document.getElementById('enablePermissionsBtn');
+        const testModeIndicator = document.getElementById('testModeIndicator');
+
+        if (getTestMode()) testModeIndicator.classList.remove('hidden');
+
+        const triggerSOS = () => {
+            triggerEmergency(
+                (action) => {
+                    document.getElementById('statusModal').classList.remove('hidden');
+                    document.getElementById('currentAction').textContent = action;
+                },
+                (url) => {
+                    document.getElementById('statusLoading').classList.add('hidden');
+                    document.getElementById('statusSuccess').classList.remove('hidden');
+                    document.getElementById('capturedLocationLink').href = url;
+                    document.getElementById('capturedLocationLink').textContent = url;
+                }
+            );
+        };
+
+        document.getElementById('emergencyBtn').addEventListener('click', triggerSOS);
+
+        // Check if triggered from floating button
+        if (localStorage.getItem('triggerOnLoad') === 'true') {
+            localStorage.removeItem('triggerOnLoad');
+            setTimeout(triggerSOS, 500);
+        }
+
+        // Permissions
+        enablePermissionsBtn.addEventListener('click', async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+                location.reload();
+            } catch (err) {
+                alert("Please grant permissions.");
+            }
+        });
+
+        // Voice Recognition
+        function initVoice() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                voiceStatusText.textContent = "Not supported";
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.onstart = () => {
+                voiceStatusText.textContent = "Protection Active";
+                voiceIconContainer.className = "w-14 h-14 rounded-2xl bg-sky-50 flex items-center justify-center text-xl transition-all shadow-inner";
+                voiceStatusIcon.className = "fas fa-microphone text-sky-500";
+                voiceWave.classList.remove('hidden');
+            };
+            recognition.onerror = (e) => {
+                if (e.error === 'not-allowed') enablePermissionsBtn.classList.remove('hidden');
+            };
+            recognition.onresult = (e) => {
+                let transcript = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) transcript += e.results[i][0].transcript.toLowerCase();
+                if (transcript.match(/help/g)?.length >= 3) {
+                    recognition.stop();
+                    triggerSOS();
+                }
+            };
+            recognition.onend = () => { if (!isEmergencyActive) recognition.start(); };
+            recognition.start();
+        }
+        initVoice();
+    </script>
+</body>
+</html>

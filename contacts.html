@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard | Contacts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="pb-24 text-slate-900 bg-slate-50">
+    <!-- Header -->
+    <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center gap-3">
+            <div class="bg-sky-500 p-2 rounded-lg shadow-lg shadow-sky-200">
+                <i class="fas fa-users text-white text-xl"></i>
+            </div>
+            <span class="text-2xl font-black tracking-tight text-slate-900 uppercase">Contacts</span>
+        </div>
+        <span id="contactCount" class="bg-white border border-slate-200 text-[10px] px-2 py-1 rounded-lg text-slate-500 font-black uppercase tracking-tighter shadow-sm">0/5</span>
+    </nav>
+
+    <main class="container mx-auto px-4 max-w-lg space-y-8">
+        <!-- Add Contact Form -->
+        <div class="glass-panel rounded-3xl p-6 shadow-xl shadow-slate-200/50">
+            <h2 class="text-lg font-black text-slate-900 mb-4 uppercase tracking-tight">Add Protector</h2>
+            <form id="addContactForm" class="space-y-4">
+                <input type="text" id="contactName" placeholder="Full Name" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium" required>
+                <div class="grid grid-cols-1 gap-4">
+                    <input type="email" id="contactEmail" placeholder="Email Address" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium" required>
+                    <input type="tel" id="contactPhone" placeholder="Phone Number" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium" required>
+                </div>
+                <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-2xl transition-all text-sm flex items-center justify-center gap-2 shadow-lg shadow-sky-200">
+                    <i class="fas fa-plus-circle"></i> Save Contact
+                </button>
+            </form>
+        </div>
+
+        <!-- Contact List -->
+        <div id="contactList" class="space-y-4">
+            <!-- Dynamic Contacts -->
+            <div id="noContacts" class="text-center py-12 border-2 border-dashed border-slate-200 rounded-3xl bg-white/50">
+                <i class="fas fa-user-shield text-slate-200 text-5xl mb-3 block"></i>
+                <p class="text-slate-400 font-bold text-sm uppercase tracking-widest">No protectors added yet</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-100 px-6 py-3 flex justify-around items-center z-50">
+        <a href="index.html" class="nav-link">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">SOS</span>
+        </a>
+        <a href="contacts.html" class="nav-link active">
+            <i class="fas fa-users text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Contacts</span>
+        </a>
+        <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Settings</span>
+        </a>
+    </div>
+
+    <script src="core.js"></script>
+    <script>
+        const contactList = document.getElementById('contactList');
+        const noContacts = document.getElementById('noContacts');
+        const contactCount = document.getElementById('contactCount');
+        const addContactForm = document.getElementById('addContactForm');
+
+        function render() {
+            const contacts = getContacts();
+            contactCount.textContent = `${contacts.length}/5`;
+            
+            if (contacts.length === 0) {
+                noContacts.classList.remove('hidden');
+                contactList.innerHTML = '';
+                contactList.appendChild(noContacts);
+            } else {
+                noContacts.classList.add('hidden');
+                contactList.innerHTML = contacts.map((c, i) => `
+                    <div class="flex items-center justify-between bg-white p-5 rounded-3xl border border-slate-100 shadow-sm group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center font-black text-sky-500 text-lg shadow-inner">
+                                ${c.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h3 class="font-black text-slate-900 leading-none mb-1">${c.name}</h3>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${c.email} • ${c.phone}</p>
+                            </div>
+                        </div>
+                        <button onclick="remove(${i})" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        addContactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const contacts = getContacts();
+            if (contacts.length >= 5) return alert("Max 5 contacts.");
+            contacts.push({
+                name: document.getElementById('contactName').value,
+                email: document.getElementById('contactEmail').value,
+                phone: document.getElementById('contactPhone').value
+            });
+            localStorage.setItem('safeGuardContacts', JSON.stringify(contacts));
+            addContactForm.reset();
+            render();
+        });
+
+        window.remove = (i) => {
+            const contacts = getContacts();
+            contacts.splice(i, 1);
+            localStorage.setItem('safeGuardContacts', JSON.stringify(contacts));
+            render();
+        };
+
+        render();
+    </script>
+</body>
+</html>

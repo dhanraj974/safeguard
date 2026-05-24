@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard | Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="pb-24 text-slate-900 bg-slate-50">
+    <!-- Header -->
+    <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center gap-3">
+            <div class="bg-slate-100 p-2 rounded-lg shadow-inner">
+                <i class="fas fa-cog text-slate-400 text-xl"></i>
+            </div>
+            <span class="text-2xl font-black tracking-tight text-slate-900 uppercase">Settings</span>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 max-w-lg space-y-6">
+        <!-- User Profile Section -->
+        <div class="glass-panel rounded-3xl p-6 shadow-xl shadow-slate-200/50">
+            <h4 class="font-black text-slate-900 mb-2 uppercase tracking-tight">Your Profile</h4>
+            <p class="text-xs text-slate-500 mb-4">Your name will be included in the emergency alerts.</p>
+            <input type="text" id="userName" placeholder="Your Full Name" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium mb-4">
+            <button onclick="saveUserProfile()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-black py-3 rounded-2xl uppercase tracking-widest text-xs transition-all">
+                Update Name
+            </button>
+        </div>
+
+        <!-- Install App Section -->
+        <div class="glass-panel rounded-3xl p-6 shadow-xl shadow-slate-200/50">
+            <h4 class="font-black text-slate-900 mb-2 uppercase tracking-tight">Add to Desktop & Mobile</h4>
+            <p class="text-xs text-slate-500 mb-4">Click below to place a permanent SOS button directly on your computer desktop or mobile phone home screen.</p>
+            
+            <button id="installAppBtn" onclick="installSafeGuard()" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 mb-4">
+                <i class="fas fa-download"></i> Install App on Device
+            </button>
+
+            <div class="bg-sky-50 p-4 rounded-2xl border border-sky-100 text-xs font-bold text-sky-700 space-y-2">
+                <p><i class="fas fa-desktop mr-2"></i> <strong>PC:</strong> Will appear on your desktop wallpaper.</p>
+                <p><i class="fas fa-mobile-alt mr-2"></i> <strong>Mobile:</strong> Will appear next to your other apps.</p>
+            </div>
+        </div>
+
+        <!-- Floating Widget Toggle -->
+        <div class="glass-panel rounded-3xl p-6 flex items-center justify-between shadow-xl shadow-slate-200/50">
+            <div>
+                <h4 class="font-black text-slate-900 uppercase tracking-tight">Floating SOS</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Show emergency button on screen</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="floatingModeToggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500 shadow-inner"></div>
+            </label>
+        </div>
+
+        <!-- Simulation Mode -->
+        <div class="glass-panel rounded-3xl p-6 flex items-center justify-between shadow-xl shadow-slate-200/50">
+            <div>
+                <h4 class="font-black text-slate-900 uppercase tracking-tight">Simulation Mode</h4>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Test UI without real alerts</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="testModeToggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-400 shadow-inner"></div>
+            </label>
+        </div>
+
+        <!-- EmailJS Config -->
+        <div class="glass-panel rounded-3xl p-6 shadow-xl shadow-slate-200/50">
+            <h4 class="font-black text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-tight">
+                <i class="fas fa-envelope-open-text text-sky-500"></i> Messaging Config
+            </h4>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5 block">Public Key</label>
+                    <input type="password" id="emailjsPublicKey" placeholder="user_XXXXXXXX" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5 block">Service ID</label>
+                    <input type="text" id="emailjsServiceId" placeholder="service_XXXXXXX" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5 block">Template ID</label>
+                    <input type="text" id="emailjsTemplateId" placeholder="template_XXXXXXX" class="input-field w-full px-4 py-3 rounded-2xl text-sm font-medium">
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="save()" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white font-black py-4 rounded-2xl text-sm transition-all shadow-lg shadow-sky-200">
+                        Save Settings
+                    </button>
+                    <button id="testEmailBtn" onclick="test()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-black py-4 rounded-2xl text-sm transition-all shadow-sm">
+                        Send Test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center py-6">
+            <p class="text-slate-300 text-[10px] font-black uppercase tracking-widest">SafeGuard v1.3.0 | Protected System</p>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-100 px-6 py-3 flex justify-around items-center z-50">
+        <a href="index.html" class="nav-link">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">SOS</span>
+        </a>
+        <a href="contacts.html" class="nav-link">
+            <i class="fas fa-users text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Contacts</span>
+        </a>
+        <a href="settings.html" class="nav-link active">
+            <i class="fas fa-cog text-xl"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Settings</span>
+        </a>
+    </div>
+
+    <script src="core.js"></script>
+    <script>
+        const config = getConfig();
+        document.getElementById('emailjsPublicKey').value = config.publicKey;
+        document.getElementById('emailjsServiceId').value = config.serviceId;
+        document.getElementById('emailjsTemplateId').value = config.templateId;
+
+        // Load User Name
+        document.getElementById('userName').value = localStorage.getItem('safeGuardUserName') || '';
+        
+        window.saveUserProfile = () => {
+            const name = document.getElementById('userName').value.trim();
+            if (!name) return alert("Please enter your name.");
+            localStorage.setItem('safeGuardUserName', name);
+            alert("Profile updated! Your name will now appear in SOS alerts.");
+        };
+        
+        const testModeToggle = document.getElementById('testModeToggle');
+        testModeToggle.checked = getTestMode();
+        testModeToggle.addEventListener('change', (e) => {
+            localStorage.setItem('safeGuardTestMode', JSON.stringify(e.target.checked));
+        });
+
+        const floatingModeToggle = document.getElementById('floatingModeToggle');
+        floatingModeToggle.checked = getFloatingMode();
+        floatingModeToggle.addEventListener('change', (e) => {
+            localStorage.setItem('safeGuardFloatingMode', JSON.stringify(e.target.checked));
+            initFloatingWidget(); // Update immediately
+        });
+
+        window.save = () => {
+            const newConfig = {
+                publicKey: document.getElementById('emailjsPublicKey').value.trim(),
+                serviceId: document.getElementById('emailjsServiceId').value.trim(),
+                templateId: document.getElementById('emailjsTemplateId').value.trim()
+            };
+            localStorage.setItem('safeGuardConfig', JSON.stringify(newConfig));
+            alert("Settings saved!");
+            location.reload();
+        };
+
+        window.test = async () => {
+            const contacts = getContacts();
+            const config = getConfig();
+            if (!config.publicKey || contacts.length === 0) return alert("Setup config and add a contact first.");
+            
+            const btn = document.getElementById('testEmailBtn');
+            btn.textContent = "Sending...";
+            btn.disabled = true;
+
+            try {
+                emailjs.init(config.publicKey);
+                await emailjs.send(config.serviceId, config.templateId, {
+                    to_email: contacts[0].email,
+                    to_name: contacts[0].name,
+                    location: "TESTING - SafeGuard",
+                    message: "Test email from SafeGuard settings!"
+                });
+                alert("✅ Test email sent!");
+            } catch (e) {
+                alert(`❌ Failed: ${e.message}`);
+            } finally {
+                btn.textContent = "Send Test";
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
